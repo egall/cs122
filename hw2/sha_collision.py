@@ -4,9 +4,11 @@ import os
 import hashlib
 
 DIGITS_PLACE = 12
-NUMBER_OF_ITERATIONS = 10000000
+NUMBER_OF_ITERATIONS = 8000000
 
 
+# Test to see if the hashes match
+# Returns: None, it simply prints the two hashes for manual verification
 def check_hashes_final(full_regenerated_tup):
     regenerated_message_clean = full_regenerated_tup[0]
     regenerated_message_dirty = full_regenerated_tup[1]
@@ -16,6 +18,8 @@ def check_hashes_final(full_regenerated_tup):
     print "dirty hash = ", dirty_regen_hash
 
 
+# This function regenerates the messages that were found have a collision
+# Returns: Message + number of spaces specified
 def regenerate_message(message, number_of_spaces):
     regenerated_message = message
     for i in range (0, number_of_spaces+1):
@@ -26,6 +30,7 @@ def regenerate_message(message, number_of_spaces):
 
 # Both clean and dirty tups have the value of (hash, # of spaces)
 # Matched tups contains (clean_tup, dirty_tup)
+# Returns: A tuple with both of the regenerated messages
 def regenerate_messages(matched_tups, clean_message, dirty_message):
     clean_tup = matched_tups[0]
     dirty_tup = matched_tups[1]
@@ -37,6 +42,10 @@ def regenerate_messages(matched_tups, clean_message, dirty_message):
     return full_regenerated_tup
    
 
+# This function runs through a loop adding spaces to clean_message
+# and hashing it. If the hash has not been seen before it's added
+# to a hash table, otherwise it continues onto the next one.
+# Returns: 
 def generate_messages(clean_message):
     new_message = clean_message
     hash_dict = {}
@@ -54,6 +63,13 @@ def generate_messages(clean_message):
     print "Number of collisions =", num_col
     return hash_dict
 
+# This function runs through a loop adding spaces to dirty_message
+# and hashing the new message. It then checks to see if the hash
+# exists in the clean_message's hash dictionary. If so, it stops
+# and returns
+# Returns: Tuple that contains two tuples:
+#          First tuple - clean hash, number of spaces added in order to genereate
+#          Second tuple - dirty hash, number of spaces added in order to genereate
 def generate_dirty_collision(dirty_message, clean_dict):
     print dirty_message
     new_dirty_message = dirty_message
@@ -68,12 +84,15 @@ def generate_dirty_collision(dirty_message, clean_dict):
             return matched_tups
     
 
+# Simply calls sha on the given message and returns
 def call_sha(message):
     sha = hashlib.sha1()
     sha.update(message)
     return sha.hexdigest()
     
 
+# This program calls two functions, generate_message() and generate_dirty_collision()
+# It then verifies that these hashes do indeed cause a collison
 if __name__ == "__main__":
     clean_message = "I, Erik Steggall, would like to buy the house on 2935 Pleasure Point Drive from Rachel Ramirez, we have agreed on the price of $2,200,000. The sale will be finalized on January 8th, 2015. -Signed Erik Q. Steggall"
     dirty_message = "I, Erik Steggall, would like to buy the house on 2935 Pleasure Point Drive from Rachel Ramirez, we have agreed on the price of $1,800,000. The sale will be finalized on January 8th, 2015. -Signed Erik Q. Steggall"
