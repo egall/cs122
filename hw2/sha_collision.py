@@ -4,8 +4,8 @@ import os
 import hashlib
 
 
-def generate_messages(original_message):
-    new_message = original_message
+def generate_messages(clean_message):
+    new_message = clean_message
     hash_dict = {}
     num_col = 0
     for i in range(0, 128):
@@ -20,7 +20,24 @@ def generate_messages(original_message):
             hash_dict[short_hash_val] = i
         hash_tup = (short_hash_val, i)
     print "Number of collisions =", num_col
-    print hash_dict
+    return hash_dict
+
+def generate_dirty_collision(dirty_message, clean_dict):
+    print dirty_message
+    print clean_dict
+    new_dirty_message = dirty_message
+    for i in range(0, 128):
+        new_dirty_message = new_dirty_message + " "
+        dhash_val = call_sha(new_dirty_message)
+        short_dhash = dhash_val[-2:]
+        if short_dhash in clean_dict.keys():
+            clean_tup = (short_dhash, clean_dict[short_dhash])
+            dirty_tup = (short_dhash, i)
+            matched_tups = (clean_tup, dirty_tup)
+            return matched_tups
+            print clean_tup
+            print dirty_tup
+    
 
 def call_sha(message):
     sha = hashlib.sha1()
@@ -29,5 +46,11 @@ def call_sha(message):
     
 
 if __name__ == "__main__":
-    message = "The little brown fox jumped over the lazy dog"
-    generate_messages(message)
+    clean_message = "I, Erik Steggall, would like to buy the house on 2935 Pleasure Point Drive from Rachel Ramirez, we have agreed on the price of $2,200,000. The sale will be finalized on January 8th, 2015. -Signed Erik Q. Steggall"
+    dirty_message = "I, Erik Steggall, would like to buy the house on 2935 Pleasure Point Drive from Rachel Ramirez, we have agreed on the price of $1,800,000. The sale will be finalized on January 8th, 2015. -Signed Erik Q. Steggall"
+    clean_hash_dict = {}
+    clean_dict = generate_messages(clean_message)
+    matched_tups = generate_dirty_collision(dirty_message, clean_dict)
+    print "clean tup = ", matched_tups[0]
+    print "dirty tup = ", matched_tups[1]
+    
