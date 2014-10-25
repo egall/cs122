@@ -40,45 +40,47 @@ main(int argc, char **argv)
     int                 i, c, l;
     uint32_t            ctr;
     int                 ret;
-    int                 z = 0, itor = 0, jtor = 0, ktor = 0;
+    int                 z = 0, itor = 0, jtor = 0, ktor = 0, ltor = 0;
 
    memset (key, 0, AES_KEYLEN_128);
 
-    
-   for(ktor = 0; ktor < 256; ktor++){
-       for(jtor = 0; jtor < 256; jtor++){
-            for(itor = 0; itor < 256; itor++){
-                aes_key_block       my_key_block;
-                key[15] = itor;
-                key[14] = jtor;
-                key[13] = ktor;
-                fprintf(stderr, "k = %02x %02x %02x\n", key[13], key[14], key[15]);
-                flags &= ~AES_MODE_ENCRYPT;
-                flags |= AES_MODE_DECRYPT;
-                flags |= AES_MODE_128;
-    
-                ret = aes_init_key_block (key, flags & (AES_MODE_128 
-                                                        | AES_MODE_DECRYPT), &key_block);
-                z = 0;
-                memset (out_buf, 0, AES_BLOCKSIZE);
-                /* Zero buffer in case it's not filled */
-                memset (in_buf, 0, AES_BLOCKSIZE);
-                l = fread (in_buf, 1, AES_BLOCKSIZE, in_fp);
-                if (l == 0) {
-                    break;
-                }
-                ret = aes_decrypt_ecb ((uint8_t *)in_buf, (uint8_t *)out_buf, AES_BLOCKSIZE,
-                                       &key_block);
-                fwrite (out_buf, 1, AES_BLOCKSIZE, out_fp);
-                if (z == 0){
-                    if(out_buf[0] == 85966670672){
-                        fprintf(stderr, "outbuf = %llu\n", out_buf[0]);
-                        fprintf(stderr, "truf\n");
-                        return 0;
+   for(ltor = 0; ltor < 256; ltor++){ 
+       for(ktor = 0; ktor < 256; ktor++){
+           for(jtor = 0; jtor < 256; jtor++){
+                for(itor = 0; itor < 256; itor++){
+                    aes_key_block       my_key_block;
+                    key[15] = itor;
+                    key[14] = jtor;
+                    key[13] = ktor;
+                    key[12] = ltor;
+                    fprintf(stderr, "k = %02x %02x %02x %02x\n", key[12], key[13], key[14], key[15]);
+                    flags &= ~AES_MODE_ENCRYPT;
+                    flags |= AES_MODE_DECRYPT;
+                    flags |= AES_MODE_128;
+        
+                    ret = aes_init_key_block (key, flags & (AES_MODE_128 
+                                                            | AES_MODE_DECRYPT), &key_block);
+                    z = 0;
+                    memset (out_buf, 0, AES_BLOCKSIZE);
+                    /* Zero buffer in case it's not filled */
+                    memset (in_buf, 0, AES_BLOCKSIZE);
+                    l = fread (in_buf, 1, AES_BLOCKSIZE, in_fp);
+                    if (l == 0) {
+                        break;
                     }
+                    ret = aes_decrypt_ecb ((uint8_t *)in_buf, (uint8_t *)out_buf, AES_BLOCKSIZE,
+                                           &key_block);
+                    fwrite (out_buf, 1, AES_BLOCKSIZE, out_fp);
+                    if (z == 0){
+                        if(out_buf[0] == 85966670672){
+                            fprintf(stderr, "outbuf = %llu\n", out_buf[0]);
+                            fprintf(stderr, "truf\n");
+                            return 0;
+                        }
+                    }
+                    z++;
+                    rewind(in_fp);
                 }
-                z++;
-                rewind(in_fp);
             }
         }
     }
