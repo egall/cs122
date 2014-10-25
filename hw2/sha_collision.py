@@ -4,7 +4,7 @@ import os
 import hashlib
 
 DIGITS_PLACE = 4
-NUMBER_OF_ITERATIONS = 128
+NUMBER_OF_ITERATIONS = 1024
 
 
 def check_hashes_final(full_regenerated_tup):
@@ -22,7 +22,6 @@ def regenerate_message(message, number_of_spaces):
         regenerated_message = regenerated_message + " "
     regen_hash = call_sha(regenerated_message)
     short_regen_hash = regen_hash[-DIGITS_PLACE:]
-    print "regen = ", short_regen_hash
     return regenerated_message
 
 # Both clean and dirty tups have the value of (hash, # of spaces)
@@ -48,7 +47,6 @@ def generate_messages(clean_message):
         # hash_tup hold the hash and the number of spaces it holds 
         short_hash_val = hash_val[-DIGITS_PLACE:]
         if short_hash_val in hash_dict.keys():
-            print "collision!\n"
             num_col += 1
         else:
             hash_dict[short_hash_val] = i
@@ -58,7 +56,6 @@ def generate_messages(clean_message):
 
 def generate_dirty_collision(dirty_message, clean_dict):
     print dirty_message
-    print clean_dict
     new_dirty_message = dirty_message
     for i in range(0, NUMBER_OF_ITERATIONS):
         new_dirty_message = new_dirty_message + " "
@@ -69,8 +66,6 @@ def generate_dirty_collision(dirty_message, clean_dict):
             dirty_tup = (short_dhash, i)
             matched_tups = (clean_tup, dirty_tup)
             return matched_tups
-            print clean_tup
-            print dirty_tup
     
 
 def call_sha(message):
@@ -87,6 +82,12 @@ if __name__ == "__main__":
     matched_tups = generate_dirty_collision(dirty_message, clean_dict)
     full_regenerated_tup = regenerate_messages(matched_tups, clean_message, dirty_message)
     check_hashes_final(full_regenerated_tup)
+    clean_tup = matched_tups[0]
+    dirty_tup = matched_tups[1]
+    number_of_clean_spaces = clean_tup[1]
+    number_of_dirty_spaces = dirty_tup[1]
+    print("clean message is {} \nnumber of spaces in it are {}".format(clean_message, number_of_clean_spaces))
+    print("dirty message is {} \nnumber of spaces in it are {}".format(dirty_message, number_of_dirty_spaces))
   
     
     
