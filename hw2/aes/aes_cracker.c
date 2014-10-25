@@ -53,7 +53,6 @@ main(int argc, char **argv)
                     key[14] = jtor;
                     key[13] = ktor;
                     key[12] = ltor;
-                    fprintf(stderr, "k = %02x %02x %02x %02x\n", key[12], key[13], key[14], key[15]);
                     flags &= ~AES_MODE_ENCRYPT;
                     flags |= AES_MODE_DECRYPT;
                     flags |= AES_MODE_128;
@@ -75,6 +74,7 @@ main(int argc, char **argv)
                         if(out_buf[0] == 85966670672){
                             fprintf(stderr, "outbuf = %llu\n", out_buf[0]);
                             fprintf(stderr, "truf\n");
+                            fprintf(stderr, "k = %02x %02x %02x %02x\n", key[12], key[13], key[14], key[15]);
                             return 0;
                         }
                     }
