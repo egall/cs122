@@ -145,43 +145,14 @@ main(int argc, char **argv)
         if (c == -1) {
             break;
         }
-
         switch (c) {
-        case 'e':
-            flags &= ~AES_MODE_DECRYPT;
-            flags |= AES_MODE_ENCRYPT;
-            break;
-        case 'd':
-            flags &= ~AES_MODE_ENCRYPT;
-            flags |= AES_MODE_DECRYPT;
-            break;
         case '1':
+            fprintf(stderr, "optarg = %s\n", optarg);
             if (get_hexkey (optarg, key, AES_KEYLEN_128) < 0) {
                 fprintf (stderr, "%s: Bad hex key %s\n", argv[0], optarg);
                 print_help (argv[0], 1);
             }
             flags |= AES_MODE_128;
-            break;
-        case '2':
-            if (get_hexkey (optarg, key, AES_KEYLEN_256) < 0) {
-                fprintf (stderr, "%s: Bad hex key %s\n", argv[0], optarg);
-                print_help (argv[0], 1);
-            }
-            flags |= AES_MODE_256;
-            break;
-        case 'm':
-            flags &= ~AES_MODE_ALL_MODES;
-            if (! strcmp (optarg, "CBC") || ! strcmp (optarg, "cbc")) {
-                flags |= AES_MODE_CBC;
-            } else if (! strcmp (optarg, "ECB") || ! strcmp (optarg, "ecb")) {
-                flags |= AES_MODE_ECB;
-            } else if (! strcmp (optarg, "CTR") || ! strcmp (optarg, "ctr")) {
-                fprintf (stderr, "CTR mode not currently supported.\n");
-                print_help (argv[0], 1);
-            } else {
-                fprintf (stderr, "Unrecognized mode %s.\n", optarg);
-                print_help (argv[0], 1);
-            }
             break;
         default:
             fprintf (stderr, "%s: option %c not recognized!\n", argv[0], c);
@@ -190,64 +161,40 @@ main(int argc, char **argv)
         }
     }
 
+/*
     if (! (flags & (AES_MODE_128 | AES_MODE_256))) {
         fprintf (stderr, "%s: must provide a key!\n", argv[0]);
         print_help (argv[0], 1);
     }
+*/
     
     for(itor = 0; itor < 256; itor++){
-        /* Print the key, just in case */
-        for (i = 0; i < (flags & AES_MODE_128 ? AES_KEYLEN_128 : AES_KEYLEN_256); i++) {
-            sprintf (buf+2*i, "%02x", key[i]);
-        }
-        fprintf (stderr, "KEY: %s\n", buf);
-        fprintf (stderr, "key: %s\n", buf);
-        //
+        aes_key_block       my_key_block;
         key[15] = itor;
-        fprintf(stderr, "itor = %02x\n key = %02x\n", itor, key[15]);
-        ret = aes_init_key_block (key, flags & (AES_MODE_128 | AES_MODE_256 |
-                                                AES_MODE_ENCRYPT | AES_MODE_DECRYPT), &key_block);
+//        key[15] = 0xff;
+        flags &= ~AES_MODE_ENCRYPT;
+        flags |= AES_MODE_DECRYPT;
+
+        ret = aes_init_key_block (key, flags & (AES_MODE_128 
+                                                | AES_MODE_DECRYPT), &key_block);
         z = 0;
-        if (flags & (AES_MODE_ECB | AES_MODE_CBC)) {
-            memset (out_buf, 0, AES_BLOCKSIZE);
-            while (!feof (in_fp)) {
-                /* Zero buffer in case it's not filled */
-                memset (in_buf, 0, AES_BLOCKSIZE);
-                l = fread (in_buf, 1, AES_BLOCKSIZE, in_fp);
-                if (l == 0) {
-                    break;
-                }
-                if (flags & AES_MODE_ENCRYPT) {
-                    if (flags & AES_MODE_CBC) {
-                        for (i = 0; i < AES_BLOCKSIZE / sizeof (uint64_t); ++i) {
-                            in_buf[i] ^= out_buf[i];
-                        }
-                    }
-                    ret = aes_encrypt_ecb ((uint8_t *)in_buf, (uint8_t *)out_buf, AES_BLOCKSIZE,
-                                           &key_block);
-                } else {
-                    ret = aes_decrypt_ecb ((uint8_t *)in_buf, (uint8_t *)out_buf, AES_BLOCKSIZE,
-                                           &key_block);
-                    if (flags & AES_MODE_CBC) {
-                        for (i = 0; i < AES_BLOCKSIZE / sizeof (uint64_t); ++i) {
-                            out_buf[i] ^= prev_buf[i];
-                            prev_buf[i] = in_buf[i];
-                        }
-                    }
-                }
-                fwrite (out_buf, 1, AES_BLOCKSIZE, out_fp);
-                if (z == 0){
-                    fprintf(stderr, "outbuf = %llu\n", out_buf[0]);
-                    if(out_buf[0] == 85966670672){
-                        fprintf(stderr, "truf\n");
-                        }
-                }
-                z++;
-            }
-        } else if (flags & AES_MODE_CTR) {
-            /* TBD */
+        memset (out_buf, 0, AES_BLOCKSIZE);
+        /* Zero buffer in case it's not filled */
+        memset (in_buf, 0, AES_BLOCKSIZE);
+        l = fread (in_buf, 1, AES_BLOCKSIZE, in_fp);
+        if (l == 0) {
+            break;
         }
+        ret = aes_decrypt_ecb ((uint8_t *)in_buf, (uint8_t *)out_buf, AES_BLOCKSIZE,
+                               &key_block);
+        fwrite (out_buf, 1, AES_BLOCKSIZE, out_fp);
+        if (z == 0){
+            fprintf(stderr, "outbuf = %llu\n", out_buf[0]);
+            if(out_buf[0] == 85966670672){
+                fprintf(stderr, "truf\n");
+            }
+        }
+        z++;
         rewind(in_fp);
-        //
     }
 }
