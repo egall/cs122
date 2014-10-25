@@ -21,6 +21,9 @@ def regenerate_messages(matched_tups, clean_message, dirty_message):
     
     full_regenerated_clean = regenerate_message(clean_message, clean_tup[1])
     full_regenerated_dirty = regenerate_message(dirty_message, dirty_tup[1])
+
+    full_regenerated_tup = (full_regenerated_clean, full_regenerated_dirty)
+    return full_regenerated_tup
    
 
 def generate_messages(clean_message):
@@ -70,6 +73,7 @@ if __name__ == "__main__":
     clean_hash_dict = {}
     clean_dict = generate_messages(clean_message)
     matched_tups = generate_dirty_collision(dirty_message, clean_dict)
-    regenerate_messages(matched_tups, clean_message, dirty_message)
+    full_regenerated_tup = regenerate_messages(matched_tups, clean_message, dirty_message)
+    print full_regenerated_tup
     
     
