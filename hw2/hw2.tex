@@ -1,0 +1,29 @@
+\documentclass{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage{times,fullpage,amsmath}
+\usepackage{enumerate,graphicx,hyperref,verbatim, amsmath, mathtools, pdfpages}
+
+\title{CS122 Homework \#2}
+\author{Erik Steggall \\ esteggall@soe.ucsc.edu}
+
+\date{Fall 2014}
+\setlength\parindent{0pt}
+\begin{document} \maketitle \pagestyle{empty}
+\section*{Problem 1}
+\subsection*{Key and Message}
+The key is: a6 28 6f fd\\
+The contents of the zip file are hw1.html, hw2.html, and the vigenere-encrypted.txt.\\
+I submitted my code in a separate file.\\
+\section*{Problem 2}
+The substitution box is necessary because it has an inverse substitution box that corresponds to it. This allows the AES algorithm to be reversed, which is necessary for decryption. It is necessary to have $2^8$ bytes because this contains all possible 8-bit values (256). This formula also makes the algorithm easier to understand, since one can simply view the hex number on the left and the hex number on the right to determine where in the S-box to go, and as was stated in class, it's best to have an algorithm that is easily understood so it's weaknesses can be discovered if they exist.\\
+
+\section*{Problem 3}
+We can replace the XOR function of the DES encryption mechanism with a hash function? 
+
+We can use the hash function as a key for DES?
+
+
+\section*{Problem 6}
+No this is not a secure method because the attacker can use statistical analysis to determine the original message.\\
+\end{document}
