@@ -4,6 +4,7 @@ import os
 import hashlib
 
 DIGITS_PLACE = 2
+NUMBER_OF_ITERATIONS = 128
 
 
 def check_hashes_final(full_regenerated_tup):
@@ -41,7 +42,7 @@ def generate_messages(clean_message):
     new_message = clean_message
     hash_dict = {}
     num_col = 0
-    for i in range(0, 128):
+    for i in range(0, NUMBER_OF_ITERATIONS):
         new_message = new_message + " "
         hash_val = call_sha(new_message)
         # hash_tup hold the hash and the number of spaces it holds 
@@ -59,7 +60,7 @@ def generate_dirty_collision(dirty_message, clean_dict):
     print dirty_message
     print clean_dict
     new_dirty_message = dirty_message
-    for i in range(0, 128):
+    for i in range(0, NUMBER_OF_ITERATIONS):
         new_dirty_message = new_dirty_message + " "
         dhash_val = call_sha(new_dirty_message)
         short_dhash = dhash_val[-DIGITS_PLACE:]
