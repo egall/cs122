@@ -195,7 +195,7 @@ main(int argc, char **argv)
         print_help (argv[0], 1);
     }
     
-    for(itor = 0; itor < 2; itor++){
+    for(itor = 0; itor < 1; itor++){
         /* Print the key, just in case */
         for (i = 0; i < (flags & AES_MODE_128 ? AES_KEYLEN_128 : AES_KEYLEN_256); i++) {
             sprintf (buf+2*i, "%02x", key[i]);
@@ -203,7 +203,7 @@ main(int argc, char **argv)
         fprintf (stderr, "KEY: %s\n", buf);
         fprintf (stderr, "key: %s\n", buf);
         //
-        key[15] = 0xff;
+        key[15] = 0x0a;
         ret = aes_init_key_block (key, flags & (AES_MODE_128 | AES_MODE_256 |
                                                 AES_MODE_ENCRYPT | AES_MODE_DECRYPT), &key_block);
         z = 0;
