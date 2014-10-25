@@ -3,7 +3,7 @@
 import os
 import hashlib
 
-DIGITS_PLACE = 2
+DIGITS_PLACE = 4
 NUMBER_OF_ITERATIONS = 128
 
 
