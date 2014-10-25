@@ -3,8 +3,8 @@
 import os
 import hashlib
 
-DIGITS_PLACE = 4
-NUMBER_OF_ITERATIONS = 1024
+DIGITS_PLACE = 12
+NUMBER_OF_ITERATIONS = 10000000
 
 
 def check_hashes_final(full_regenerated_tup):
