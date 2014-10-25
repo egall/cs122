@@ -3,6 +3,8 @@
 import os
 import hashlib
 
+DIGITS_PLACE = 2
+
 
 def check_hashes_final(full_regenerated_tup):
     regenerated_message_clean = full_regenerated_tup[0]
@@ -18,7 +20,7 @@ def regenerate_message(message, number_of_spaces):
     for i in range (0, number_of_spaces+1):
         regenerated_message = regenerated_message + " "
     regen_hash = call_sha(regenerated_message)
-    short_regen_hash = regen_hash[-2:]
+    short_regen_hash = regen_hash[-DIGITS_PLACE:]
     print "regen = ", short_regen_hash
     return regenerated_message
 
@@ -43,7 +45,7 @@ def generate_messages(clean_message):
         new_message = new_message + " "
         hash_val = call_sha(new_message)
         # hash_tup hold the hash and the number of spaces it holds 
-        short_hash_val = hash_val[-2:]
+        short_hash_val = hash_val[-DIGITS_PLACE:]
         if short_hash_val in hash_dict.keys():
             print "collision!\n"
             num_col += 1
@@ -60,7 +62,7 @@ def generate_dirty_collision(dirty_message, clean_dict):
     for i in range(0, 128):
         new_dirty_message = new_dirty_message + " "
         dhash_val = call_sha(new_dirty_message)
-        short_dhash = dhash_val[-2:]
+        short_dhash = dhash_val[-DIGITS_PLACE:]
         if short_dhash in clean_dict.keys():
             clean_tup = (short_dhash, clean_dict[short_dhash])
             dirty_tup = (short_dhash, i)
