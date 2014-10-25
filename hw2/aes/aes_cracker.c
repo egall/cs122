@@ -40,15 +40,17 @@ main(int argc, char **argv)
     int                 i, c, l;
     uint32_t            ctr;
     int                 ret;
-    int                 z = 0, itor = 0, jtor = 0;
+    int                 z = 0, itor = 0, jtor = 0, ktor = 0;
 
    memset (key, 0, AES_KEYLEN_128);
     
-   for(jtor = 0; jtor < 2; jtor++){
+
+   for(jtor = 0; jtor < 256; jtor++){
         for(itor = 0; itor < 256; itor++){
             aes_key_block       my_key_block;
             key[15] = itor;
-    //        key[15] = 0xff;
+            key[14] = jtor;
+            fprintf(stderr, "k = %02x %02x\n", key[14], key[15]);
             flags &= ~AES_MODE_ENCRYPT;
             flags |= AES_MODE_DECRYPT;
             flags |= AES_MODE_128;
@@ -67,9 +69,10 @@ main(int argc, char **argv)
                                    &key_block);
             fwrite (out_buf, 1, AES_BLOCKSIZE, out_fp);
             if (z == 0){
-                fprintf(stderr, "outbuf = %llu\n", out_buf[0]);
                 if(out_buf[0] == 85966670672){
+                    fprintf(stderr, "outbuf = %llu\n", out_buf[0]);
                     fprintf(stderr, "truf\n");
+                    return 0;
                 }
             }
             z++;
