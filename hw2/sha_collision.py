@@ -11,27 +11,16 @@ def regenerate_message(message, number_of_spaces):
     regen_hash = call_sha(regenerated_message)
     short_regen_hash = regen_hash[-2:]
     print "regen = ", short_regen_hash
+    return regenerated_message
 
 # Both clean and dirty tups have the value of (hash, # of spaces)
 # Matched tups contains (clean_tup, dirty_tup)
 def regenerate_messages(matched_tups, clean_message, dirty_message):
     clean_tup = matched_tups[0]
     dirty_tup = matched_tups[1]
-    regenerate_message(clean_message, clean_tup[1])
-    """
-    regenerated_clean = clean_message
-    for i in range (0, clean_tup[1]+1):
-        regenerated_clean = regenerated_clean + " "
-    regen_clean_hash = call_sha(regenerated_clean)
-    short_regen_clean = regen_clean_hash[-2:]
-
-
-    for j in range (0, dirty_tup[1]+1):
-        regenerated_dirty = regenerated_dirty + " "
-    print "regen = ", short_regen_clean
-    """
-    print "clean tup = ", clean_tup
-    print "dirty tup = ", dirty_tup
+    
+    full_regenerated_clean = regenerate_message(clean_message, clean_tup[1])
+    full_regenerated_dirty = regenerate_message(dirty_message, dirty_tup[1])
    
 
 def generate_messages(clean_message):
