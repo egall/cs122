@@ -6,7 +6,7 @@ import hashlib
 
 def check_hashes_final(full_regenerated_tup):
     regenerated_message_clean = full_regenerated_tup[0]
-    regenerated_message_dirty = full_regenerated_dirty[0]
+    regenerated_message_dirty = full_regenerated_tup[1]
     clean_regen_hash = call_sha(regenerated_message_clean)
     dirty_regen_hash = call_sha(regenerated_message_dirty)
     print "clean hash = ", clean_regen_hash
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     clean_dict = generate_messages(clean_message)
     matched_tups = generate_dirty_collision(dirty_message, clean_dict)
     full_regenerated_tup = regenerate_messages(matched_tups, clean_message, dirty_message)
-    print full_regenerated_tup
+    check_hashes_final(full_regenerated_tup)
   
     
     
