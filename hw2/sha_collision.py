@@ -3,10 +3,13 @@
 import os
 import hashlib
 
-DIGITS_PLACE = 8
-#DIGITS_PLACE = 12
-#NUMBER_OF_ITERATIONS = 8000000
-NUMBER_OF_ITERATIONS = 65536
+#DIGITS_PLACE = 8
+#DIGITS_PLACE = 9
+DIGITS_PLACE = 12
+#NUMBER_OF_ITERATIONS = 16777216
+#NUMBER_OF_ITERATIONS = 65536
+#NUMBER_OF_ITERATIONS = 131072
+NUMBER_OF_ITERATIONS = 33554432
 
 
 # Test to see if the hashes match
@@ -52,9 +55,12 @@ def generate_messages(clean_message):
     new_message = clean_message
     hash_dict = {}
     num_col = 0
+    #sha = hashlib.sha1()
     for i in range(0, NUMBER_OF_ITERATIONS*2):
         new_message = new_message + " "
         hash_val = call_sha(new_message)
+        #sha.update(new_message)
+        #hash_val = sha.hexdigest()
         # hash_tup hold the hash and the number of spaces it holds 
         short_hash_val = hash_val[-DIGITS_PLACE:]
         if short_hash_val in hash_dict:
@@ -75,9 +81,12 @@ def generate_messages(clean_message):
 def generate_dirty_collision(dirty_message, clean_dict):
     print dirty_message
     new_dirty_message = dirty_message
+    #sha = hashlib.sha1()
     for i in range(0, NUMBER_OF_ITERATIONS):
         new_dirty_message = new_dirty_message + " "
         dhash_val = call_sha(new_dirty_message)
+        #sha.update(new_dirty_message)
+        #dhash_val = sha.hexdigest()
         short_dhash = dhash_val[-DIGITS_PLACE:]
         if short_dhash in clean_dict:
             clean_tup = (short_dhash, clean_dict[short_dhash])
