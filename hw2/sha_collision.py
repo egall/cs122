@@ -5,11 +5,14 @@ import hashlib
 
 #DIGITS_PLACE = 8
 #DIGITS_PLACE = 9
-DIGITS_PLACE = 12
+DIGITS_PLACE = 10
+#DIGITS_PLACE = 12
 #NUMBER_OF_ITERATIONS = 16777216
 #NUMBER_OF_ITERATIONS = 65536
 #NUMBER_OF_ITERATIONS = 131072
-NUMBER_OF_ITERATIONS = 33554432
+#NUMBER_OF_ITERATIONS = 262144
+NUMBER_OF_ITERATIONS = 524288
+#NUMBER_OF_ITERATIONS = 33554432
 
 
 # Test to see if the hashes match
@@ -28,7 +31,8 @@ def check_hashes_final(full_regenerated_tup):
 def regenerate_message(message, number_of_spaces):
     regenerated_message = message
     for i in range (0, number_of_spaces+1):
-        regenerated_message = regenerated_message + " "
+        imod = i % 33
+        regenerated_message = regenerated_message + chr(imod)
     regen_hash = call_sha(regenerated_message)
     short_regen_hash = regen_hash[-DIGITS_PLACE:]
     return regenerated_message
@@ -56,8 +60,9 @@ def generate_messages(clean_message):
     hash_dict = {}
     num_col = 0
     #sha = hashlib.sha1()
-    for i in range(0, NUMBER_OF_ITERATIONS*2):
-        new_message = new_message + " "
+    for i in range(0, NUMBER_OF_ITERATIONS):
+        imod = i % 33
+        new_message = new_message + chr(imod)
         hash_val = call_sha(new_message)
         #sha.update(new_message)
         #hash_val = sha.hexdigest()
@@ -82,8 +87,9 @@ def generate_dirty_collision(dirty_message, clean_dict):
     print dirty_message
     new_dirty_message = dirty_message
     #sha = hashlib.sha1()
-    for i in range(0, NUMBER_OF_ITERATIONS):
-        new_dirty_message = new_dirty_message + " "
+    for i in range(0, NUMBER_OF_ITERATIONS*2):
+        imod = i % 33
+        new_dirty_message = new_dirty_message + chr(imod)
         dhash_val = call_sha(new_dirty_message)
         #sha.update(new_dirty_message)
         #dhash_val = sha.hexdigest()
