@@ -6,7 +6,8 @@ import hashlib
 def edit_message(message, spaces):
     regenerated_message = message
     for i in range (0, spaces+1):
-        regenerated_message = regenerated_message + " "
+        imod = i % 33
+        regenerated_message = regenerated_message + chr(imod)
 #    regen_hash = call_sha(regenerated_message)
 #    short_regen_hash = regen_hash[-DIGITS_PLACE:]
     return regenerated_message
