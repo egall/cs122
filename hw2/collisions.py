@@ -3,10 +3,11 @@
 import os
 import hashlib
 
-#DIGITS_PLACE = 3
+#DIGITS_PLACE = 1
 #DIGITS_PLACE = 8
 #DIGITS_PLACE = 9
 #DIGITS_PLACE = 10
+#DIGITS_PLACE = 11
 DIGITS_PLACE = 12
 #NUMBER_OF_ITERATIONS = 16
 #NUMBER_OF_ITERATIONS = 16777216
@@ -15,6 +16,7 @@ DIGITS_PLACE = 12
 #NUMBER_OF_ITERATIONS = 262144
 #NUMBER_OF_ITERATIONS = 524288
 #NUMBER_OF_ITERATIONS = 4194304
+#NUMBER_OF_ITERATIONS = 8388608
 NUMBER_OF_ITERATIONS = 33554432
 
 message_second_half = "PM, 2015. -Signed Erik Q. Steggall"
@@ -76,7 +78,7 @@ def generate_messages(clean_message):
         #hash_val = sha.hexdigest()
         # hash_tup hold the hash and the number of spaces it holds 
         short_hash_val = hash_val[-DIGITS_PLACE:]
-        #print "i = {} hash = {}".format(hash_val, i)
+        #print "hash = {} i = {}".format(hash_val, i)
         if short_hash_val in hash_dict:
             num_col += 1
         else:
@@ -115,9 +117,7 @@ def generate_dirty_collision(dirty_message, clean_dict):
 
 # Simply calls sha on the given message and returns
 def call_sha(message):
-    sha = hashlib.sha1()
-    sha.update(message)
-    return sha.hexdigest()
+    return hashlib.sha1(message).hexdigest()
     
 
 # This program calls two functions, generate_message() and generate_dirty_collision()
