@@ -1,0 +1,22 @@
+Please turn in a single PDF file (no other file formats are acceptable!).
+
+[5 points] Create your own public/private key pair, and have your public key signed by at least 3 people, including (preferably) one who doesn't attend UCSC.
+Upload your public key to the key server at pgp.mit.edu. Your answer to this part should be the URL of the key server and a search string that someone can use to find your public key at the key server.
+Why is it helpful to have people from diverse locations and social circles sign your key?
+[10 points] (problem based on one from Stallings' Cryptography and Network Security text) Consider the following authentication protocol:
+A → B: IDA 
+B → A: EKUA(N0)
+A → B: N0
+Explain this protocol. Who is being authenticated to whom, and how?
+How could this protocol be subverted?
+How could you fix this bug in the protocol?
+[5 points] Recently, banks (and other institutions) have started using security images, where they display an user-chosen image after your username is entered but before the password is entered. How does this improve the security of the authentication process? How could you get around it as an attacker?
+[10 points] Problem 22.2 in the text (page 700). This problem is about SSL and threats to Web security.
+[5 points] Problem 22.4 in the text (page 701)
+[10 points] ssh relies on the client knowing the server's public key. This is a weakness in the protocol that could be used to subvert it.
+Explain how an attack could succeed if a client didn't know the server's public key, and what damage that attack could possibly cause.
+The current way to prevent this is for the client to discover the server's public key in a (hopefully) safe environment. Are there other approaches to finding a server's public key that could be used to guard against the attacks you described in the previous part of the question?
+[5 points] Both SSL and IPSec can wrap existing protocols with a layer of security. Why do we need to have two protocols; why not just standardize on a single protocol? For which situations (if any) is SSL better than IPSec? For which situations (if any) is IPSec better than SSL? Would it be possible to create a single protocol that could replace both? If so, how would you do it? If not, why not?
+[5 points] Google now uses SSL for all of their network connections, including simple searches. List several reasons why they might prefer to use SSL, even for connections that are unlikely to be sensitive. Should we require that all network traffic be encrypted to point-to-point? Justify your answer.
+[10 points] Problem 4.3 in the text (page 134)
+[5 points] Problem 4.6 in the text (page 135)
