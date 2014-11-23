@@ -1,0 +1,11 @@
+[5 points] Problem 6.7 (page 218) in the text.
+[5 points] Problem 6.9 (page 218) in the text.
+[5 points] Problem 6.10 (page 219) in the text.
+[5 points] Polymorphic viruses are difficult to detect. Why not simply look for the shorter code fragments that are reordered in a polymorphic virus? In other words, if a polymorphic virus has parts ABCD in some order, why not look for A, B, C, and D individually? Would this work? What impact might it have on detecting viruses in healthy code?
+[5 points] Problem 10.4 (page 353) in the text. [rewrite a code fragment]
+[5 points] Your colleague has proposed modifying the compiler to encrypt all control flow addresses (such as subroutine return addresses and virtual function table pointers) using the location of the address (the memory slot into which it's placed) as the encryption key. Then, when the address is retrieved, it's decrypted using the same location as key. For example, if the program wants to store the return address 0x00081204 on the stack at location 0x7ffa8010, it would first encrypt 0x00081204 using the key 0x7ffa8010 (ECB mode encryption) and then store the result at location 0x7ffa8010.
+What type of attacks could this prevent? Does it actually prevent them, or are there weaknesses that an attacker could leverage? Explain your answer.
+[10 points] Problem 10.11 (page 354) in the text.
+[10 points] Problem 11.4 (page 394) in the text.
+[20 points] Write a function sanitize_html(raw_text) that takes, as input, a string of raw text and returns a string that is safe to display directly. You should ensure that, if the string is embedded directly in an HTML page, it displayes the same as what the user typed in. You may need to look online to see what the security risks are for HTML; this is fine. However, you must write your own function—you may not look at any of the existing functions. The goal of this exercise is for you to learn how to sanitize a string, not to simply copy someone else's effort.
+You may use any language you want for this effort. Your code should compile / execute correctly, and you should have some sample calls to it (you can hard code them) to demonstrate how it works.
