@@ -11,7 +11,7 @@ void getinp(char *inp, int siz)
 void display(char *val)
 {
     char tmp[16];
-    sprintf(tmp, "read val: %s\n", val);
+    snprintf(tmp, 15, "read val: %s\n", val);
     puts(tmp);
 }
 int main(int argc, char *argv[])
