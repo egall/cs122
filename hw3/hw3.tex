@@ -1,0 +1,79 @@
+\documentclass{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage{times,fullpage,amsmath}
+\usepackage{enumerate,graphicx,hyperref,verbatim, amsmath, mathtools,pdfpages}
+\DeclareMathSizes{10}{10}{10}{10}
+
+\title{CS122 Homework \#3}
+
+\author{Erik Steggall\\esteggall@soe.ucsc.edu}
+
+\date{Fall 2014}
+\setlength\parindent{0pt}
+\begin{document} \maketitle \pagestyle{empty}
+\section*{Problem 1}
+\subsection*{a}
+My key ID is: 0x893dc1d7, or can be searched by name "Steggall".\\
+And can be found at \url{https://pgp.mit.edu/pks/lookup?op=vindex&search=0xB0177CE1893DC1D7}\\
+\subsection*{b}
+It's helpful to have people from diverse locations sign you key because the chances that a group of people from independent locations are all conspiring with you is much less likely than a group of people who are from the same location and thus have high potential to have interactions with one another. (Note: this is less true with the prevalence of the internet now...)\\
+\section*{Problem 2}
+\subsection*{a}
+A is being authenticated. The first step, A sends it's ID to the authentication server B.\\ 
+
+The authentication server (B) sends back a nonce, encrypted with A's public key. This nonce can only be decrypted by someone who holds A's private key, which is hopefully A.\\
+
+A then sends back the nonce in cleartext. Since A was able to decrypt the nonce, it is proof that A is A, or at least has A's private key.\\
+\subsection*{b}
+This may be susceptible to a man in the middle on the last transmission depending on what B's response is. Since the nonce is unencrypted, a man-in-the-middle can potentially intercept the nonce and send it to B, posing as A. Since the nonce has been decrypted by A the attacker will be "proving" that they are A by sending decrypted nonce back.\\
+\subsection*{c}
+I would have A encrypt the nonce with B's public key. This way it can only be decrypted and read by someone with B's private key instead of anyone snooping the wire.\\
+\section*{Problem 3}
+This would improve security because it would prove to the user that the website is the legitimate website and not one that has been forged by an attacker. Thus, the bank would be authenticating to the user by providing the picture that the user supplied.\\
+My original thought was that this would limit the attacker to targeted attacks where the attacker supplies the user name to the bank, downloads the picture, and then uses the picture to falsely "authenticate" itself as the bank. This thread on stackexchange below provides a much more clever example though; instead of attempting to supply a picture, they simply post a generic message claiming that the security picture is down for maintenance. This was an extremely effective attack in the study (only 3\% of the experiment's subjects caught on), and can be used for the general case.\\
+Link:\\
+\url{http://security.stackexchange.com/questions/19155/effectiveness-of-security-images}
+
+\section*{Problem 4}
+
+\subsection*{a}
+A man in the middle attack will not work because phase two and phase three of SSL/TLS checks to ensure that the public key certificates of the server and the client are valid.\\
+\subsection*{b}
+Password sniffing does not work because SSL/TLS encrypts the data after then handshake, so any of the password information that would be sent in the clear for HTTP is encrypted.\\
+\subsection*{c}
+IP addresses aren't used for authentication, in order to setup a connection with the server the client must go through a handshaking process and setup a session. In this handshaking process the server will validate the clients certificate to ensure the client isn't spoofing an IP address. (Note: In the book it says this is optional, but I'm guessing that if the server makes the client check optional than it doesn't matter if bogus data is sent).\\
+\subsection*{d}
+SSL/TLS establishes a connection and a session, so if the connection is broken, the attacker would have to have the session information to start up a new connection. This means that the attacker will have to have the credentials to pass the handshake, which is unlikely.\\
+\subsection{e}
+This is a TCP level attack, which is under SSL in the OSI model, therefore, SSL cannot protect against it.\\
+\section*{Problem 5}
+When a packet is received, IPsec checks to make sure that the packets sequence number is within the sliding window. If it is lower than the sliding window it its dropped, if it is in the sliding window, the corresponding slot in W is marked indicating that the packet has been received. If it is beyond W, W is advanced to that sequence number (Note: I asked in class and he said if it is significantly beyond the sequence number the packet is also dropped).\\
+This makes a replay attack very difficult because it closes the amount of time that the attacker has in order to preform a replay attack. In addition, if the attacker does get the second packet off in time, it will be already marked as received, and therefore dropped, which stops any chance of that replay attack.\\
+\section*{Problem 6}
+\subsection*{a}
+If the client doesn't know the server's public key than it could be man-in-the-middled by an attacker who is listening and waiting for the client to create a connection using ssh. Once that connection is attempted, the attacker could step in and give it's own public key, in this case, the client would connect to the attacker instead of the legitimate server who never received the connection. The client would then proceed to supply it's password information at the very least. Depending on the level of sophistication of the attacker, they may be able to replicate the legitimate server to get the user to provide more specific information.\\
+\subsection*{b}
+The public key fingerprint can be checked against the DNS records in order to verify that they are indeed the correct server. This can also be spoofed, but makes the attack much more complex and harder to pull off.\\
+
+\section*{Problem 7}
+The two protocols are different in their use cases and should stay separate because they have different purposes.\\
+SSL is a lighter weight fix for authentication and encryption of connection a machine. It doesn't take that much overhead, and can be used to establish a secure connection for individual services, such as web service. This can be done at little cost, as it is simply a layer that sits on top of TCP/IP and provides the necessary devices to ensure secure connections.\\
+IPsec on the other hand, is a more intensive implementation of a secure connection, but at the cost of a bigger overhead, it provides more capabilities. IPsec is built on the TCP/IP level of the OSI model, which is a level below SSL, this allows for the secure connection of entire subnets because it can be setup on the border of the subnet and its connection with the outside world. Functioning on a lower level of the OSI model allows for IPsec to encrypt the traffic between VPNs, which will contain multiple different connections from multiple protocols.\\
+Because of these different use cases I would not try to implement a single protocol in an attempt to combine IPsec and SSL. SSL is more appropriate for lightweight connections, such as a web browser, whereas IPsec is more appropriate when connecting two VPNs with one another. When connecting a web browser with a server we don't need all the overhead which would be required for connecting two VPNs. Alternatively, we wouldn't be able to securely connect two VPNs with an SSL connection.\\
+
+\section*{Problem 8}
+It's important to use SSL for even simple searches for multiple reasons, one main reason is session hijacking. A tool called Firesheep was designed to illustrate this point, it's and extension to the Firefox web browser that allows an attacker to highjack another user's cookie with the click of a mouse. Once the cookie is stolen, the attacker can assume the role of the user, so if the user chose to switch to SSL for a more important search the attacker would still be able to read the connection. This is significant because even if the initial authentication and authorization steps are taken using https, the cookie can be hijacked later. Another reason to not use http for simple searches is illustrated by another tool called SSL Strip. This tool takes http traffic and listens for attempted https connections. Once it gets an attempted https connection, it redirects it to an illegitimate link.\\
+
+\section*{Problem 9}
+\begin{itemize}
+    \item \textbf{Owner}: The owner of an object, this is typically the user who created the file, but can also be the administrator in  the case of system resources.\\
+    \item \textbf{Group}: One or more users who belong to a named group. An example might be a project group that wants to restrict access to a file to anyone who isn't in the group.\\
+    \item \textbf{World}: This refers to anyone who has access to the particular machine is capable of accessing the object. \\
+\end{itemize}
+
+
+\section*{Problem 10}
+An access control list (ACL) refers to the columns of an access control matrix. ACLs can be likened to a list of privileged guests at a party. If the guest can authenticate with the bouncer who has the list, they are allowed into the party. An ACL is useful when one is looking at a resource and wants to know who has access to it.\\
+A capability ticket refers to the rows of an access control matrix, it would be more like getting a ticket to a concert. There is no need to authenticate, aside from verifying the ticket is legitimate. It provides one time access for anyone, which means that it can be given to another user (potential security risk). A capability ticket is useful when trying to determine what resources a particular user has access to.\\
+\end{document}
