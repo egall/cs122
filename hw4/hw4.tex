@@ -11,9 +11,47 @@
 \setlength\parindent{0pt}
 \begin{document} \maketitle \pagestyle{empty}
 \section*{Problem 1}
+There are many vectors of attack for an unknown USB stick. The autorun feature of many systems will automatically run any files on the USB drive, this means that if there is a malicious program or script on the USB it will be run on plugin which is very dangerous. Another more complex problem might be if a seemingly legitimate program is infected by a virus, or alternately is actually a worm disguised as a legitimate program. Further still, even if there are only documents on the drive they can still exploit other applications, like if a pdf is infected with malicious macros. Furthermore, the USB's firmware can be overwritten to make the USB appear to be some other device or to infect the computer it is attached to. This means that the offending USB stick can have malware written into it's firmware to infect the host computer invisibly.\\
+There's no really safe way of discovering what information is being stored on a USB drive without risking potential comprimise of a system. If I really wanted to figure out what was on the USB stick I would use a non-networked Raspberry pi. Other steps that may help are turning off auto run on the computer that is using it, and using antivirus on the computer as well.\\
+
+\section*{Problem 2}
+Since you as the user approve the installation, whatever is installed will have your user privileges to run. This attack is a Trojan because you permitted the installation which means that you open up your computer to any sort of worm or virus that the installed code might be/contain.\\
+
+\section*{Problem 3}
+I would be suspicious because the app was downloaded by a non-proprietary source, which means that it doesn't necessarily go through the proper vetting processes to ensure that it is a legitimate game (not malcode). I would be mostly suspicious for this reason, depending on the type of game the SMS and address book may make sense, but it also would be a red herring for the game being a potential botnet or spamming agent. This app could also potentially open you up to identity fraud as it could masquerade as you by sending texts from your phone to your friends. I would not trust this app.\\ 
+\section*{Problem 4}
+This question assumes that the virus would split in the exact same way every time. A polymorphic virus simply changes up assembly instructions in some manner that will not affect the outcome of it's flow (similar to pipeline optimization). There would be too many false positives if the check is on a really fine grained level (instruction level), and there are too many different potential variations to check for it on a course grained level.\\
+\section*{Problem 5}
+I included my code in the tarball. The buffer overflow was being caused by the sprintf() function merging the data from val into tmp which wasn't large enough to hold it. All I had to do was change sprintf() to snprintf().\\
+\begin{verbatim}
+snprintf(tmp, 15, "read val: %s\n", val);
+\end{verbatim}
+\section*{Problem 6}
+% This answer needs to be verified...
+I don't think that this idea would help very much. The using the location as the encryption key is security by obscurity, so if the attacker is able to determine that you are doing this they will be able to easily decrypt the location. Therefore, this would only help if return addresses were randomized (not the same address if program is rerun), but it still wouldn't help very much because the attacker would have to guess the address if randomization was turned on anyway, and the encryption does nothing if the data is going to be overwritten by the attacker anyway.\\
+\section*{Problem 7}
+I included my code in the tarball. The buffer overflow was being cause by the gets() call which would fill up the buffer in the chunk struct and overrun into the void* process, allowing for shell code to be executed in place of the process. All I had to do was change gets() to fgets().\\
+\begin{verbatim}
+fgets(next->inp, 63, stdin);
+\end{verbatim}
+\section*{Problem 8}
+The main flaw with this program is that the inputs are not sanitized before they are passed into the system() call. I used perl's HTML::Entities in order to encode them with safe characters.\\
+\begin{verbatim}
+# retrieve form field values and send comment to webmaster
+$subject = $q->param("subject");
+die "The specified user contains illegal characters!"unless ($subject =~ /^[a-zA-Z0-9_]$/);
+$from = $q->param("from");
+die "The specified user contains illegal characters!"unless ($from =~ /^[a-zA-Z0-9_]+$/);
+$body = $q->param("body");
+die "The specified user contains illegal characters!"unless ($body =~ /^[a-zA-Z0-9_]+$/);
 
 
+# generate and send comment email
+system("export REPLYTO=\"$from_sanitized\"; echo \"$body_sanitized\" | mail -s \"$subject\" $to");
+\end{verbatim}
+% There are probably more problems with this. Make sure you read over everything again before turning this in.
 \section*{Problem 9}
+% Make sure that this is all that needs to be done...
 For this problem I created a ''whitelist". which was all of the characters on the ASCII table. I used HTML entity encoding to encode each character on the ASCII table with it's HTML equivalent. If the character is not an ASCII character it is not included in the text, thus, my encoding would have to be extended for other languages but I assume English was all that was expected for this assignment.\\
 I followed rules \#1, \#2, and \#3 of OWASP's XSS prevention rules found here: \url{https://www.owasp.org/index.php/XSS\_\%28Cross\_Site\_Scripting\%29\_Prevention\_Cheat\_Sheet}
 \end{document}
