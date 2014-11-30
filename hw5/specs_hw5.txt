@@ -1,0 +1,11 @@
+[5 points] Problem 7.3 (page 246) in the text.
+[5 points] Suggest methods by which a web site could differentiate between a spike in activity due to an external event (i.e., 9/11) and a distributed denial-of-service (DDoS) attack?
+[5 points] I have a high-speed network connection coming into my home, and I also have a wireless network access point. Like most people, I don't use most of my bandwidth—my long-term average usage is under 1KB/sec over a week out of a maximum of about 2.5 MB/sec.
+List three distinct reasons why I might still want to prevent an outsider from obtaining free network access by intruding into my (single) wireless network.
+Does your answer change if I have a router / firewall that provides both an internal (private) network and an external network (that has no access to internal wireless or wired hosts)? Explain.
+[5 points] Should a network administrator put a firewall in front of a honeypot? Why or why not?
+[5 points] Problem 9.4 (page 312) in the text.
+[10 points] Problem 9.10 (page 314) in the text.
+[5 points] Suppose you want to ensure that all Web traffic flows through a single proxy, allowing your organization to examine the traffic to ensure that there's no confidential data going out (or in). How might you implement this policy? What hardware would you need, and how would you configure it? Keep in mind that there are many types of Web traffic, and you want to implement this policy with as little impact on your users as possible.
+[5 points] It has been claimed that lack of diversity in the Internet is a major vulnerability for modern computer systems. Why does the predominance of a single operating system pose a threat? Does the predominance of a few browsers pose a threat as well? How might any threat be countered?
+[5 points] Problem 8.6 (page 283) in the text.
