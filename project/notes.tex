@@ -1,0 +1,136 @@
+\documentclass{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage{times,fullpage,amsmath}
+\usepackage{enumerate,graphicx,hyperref,verbatim, amsmath, mathtools, pdfpages,enumitem}
+\DeclareMathSizes{10}{10}{10}{10}
+\title{IDS and Machine Learning Notes}
+\author{Erik Steggall \\ esteggall@soe.ucsc.edu}
+
+\date{Fall 2014}
+\setlength\parindent{0pt}
+\begin{document} \maketitle \pagestyle{empty}
+\section*{Intrusion Detection Techniques and Approaches}
+ \cite{verwoerd99}\\
+IDS split into 4 parts:\\ sensor, monitor, resolver and controller.\\
+\begin{itemize}
+    \item \textbf{Sensor}: The sensors are the lowest level part of the IDS, they translate network traffic, log data, or other system behavior to events that can be used by the IDS.\\
+    \item \textbf{Monitor}: The monitors process the events that are sent to them by the sensors and handle them appropriately, creating alert events and forwarding them to higher level monitors or resolvers when needed.\\
+    \item \textbf{Resolver}: Resolvers receive alert events from monitors and respond accordingly, usually by changing lower level components, logging the event, or reconfiguring parts of the system like the firewall.\\
+    \item \textbf{Controller}: The controller is the "head" of the IDS. It is the centralized point for the IDS network, thus, it is more significant in a distributed IDS system, however it is necessary even for a single machine as it is responsible for supervisory actions such as restarting failed components.\\
+\end{itemize}
+
+Two types of detection: 
+\subsection*{Anomaly detection}
+- threshold measure\\
+- mean and standard deviation\\
+- mutivariate model\\
+- markov process model\\
+- clustering anaysis\\
+\textbf{Types of anomaly detection}\\
+\begin{itemize}
+    \item Immune system approach
+    \item protocol verification
+    \item file checking
+    \item Taint checking
+    \item Neural nets
+    \item Whitelisting
+\end{itemize}
+
+\subsection*{Misuse detection}
+\begin{itemize}
+    \item expression matching
+    \item state transition analysis
+    \item Dedicated languages
+    \item Genetic algorithms
+    \item burglar alarm 
+\end{itemize}
+
+\subsection*{host (log) vs network monitoring and the combo of both}
+
+\textbf{Using scanning to detect potential vulns - target based IDS}
+
+
+
+\section*{Intrusion detection by machine learning: A review}
+\cite{tsai09}
+\subsection*{Machine learning algorithms}
+\begin{itemize}
+    \item KNN: Online training
+    \item Support vector machins:  
+    \item Artificial Neural Networks
+    \item Self organization maps: Reduce high-dimensional inputs into two dimensions
+    \item Decision trees
+    \item Nieve Bayes network
+    \item genetic algorithms
+    \item fuzzy logic
+\end{itemize}
+Top three are: support vector machines, KNN, and decision trees. SVMs are the best baseline technique.\\
+
+\textbf{ensemble classifiers and hybrid techniques combine the above techniques}\\
+
+\subsection*{Issues}
+Feature selection is not widely agreed upon. There's no formal baseline classifier. Multiple classification techniques have a lot of future work.\\
+
+%%%%%%%%%%%%% Bibliography %%%%%%%%%%%%%%%%%%%
+\section*{Learning Intrusion Detection: Supervised or Unsupervised}
+\cite{laskov05}\\
+Labeling network traffic is highly time intensive. It's very hard to cover even a subset of possible attacks.\\
+KDD cup data: Scans and DDOS are overrepresented and "phf or imap attacks, are grossly under-represented"\\
+
+\textbf{Supervised techniques:} C4.5, KNN, Multi-layer perceptron, regularized discriminant analysis, fisher linear discriminant, support vector machines.\\
+The best performers were non-linear algorithms. Linear algorithms did much worse.\\
+"The best results (with a significant margin) are attained by the SVM, which can be attributed to the fact that the free parameters of this algorithm are motivated by learning-theoretic arguments aimed at maintaining an ability to generalize to unseen data. The next best contestant is the k-Nearest Neighbor algorithm which possesses the most similarity to the unsupervised methods. The remaining algorithm perform approximately equally."\\
+\textbf{Unsupervised techniques:} ?-Algorithm, k-Means Clustering, Single Linkage Clustering, Quarter-Sphere Support Vector Machine.\\
+Not much difference between training and testing data for unsupervised.\\
+Unsupervised algorithms didn't perform much better than supervised when compared to unlabeled data.\\
+NOTE: Summary for this paper is good.\\
+
+\section*{Data mining and machine learningd Towards reducing false positives in intrusion detection}
+\cite{pietraszek05}\\
+Reasons for IDSs to produce false positives: Runtime limitations, Specificity of detection signatures, Dependency on environment, Base-rate fallacy\\
+
+\subsection*{Reducing false positives}
+Can drop alerts for attacks that have are properly defended against already.\\
+Grouping alerts: "given three alert attributes (namely, attack class, source address and destination address), we can group alerts into scenarios."\\
+This is a hard problem because 1) Many more false-positives than true-positives. 2) It's much worse to misclassify a false-negative than a false-positive. 3) It is hard to keep these systems running in real time.\\
+Using "Attack graphs" which are graphs of the attack vectors for each of the hosts on a network. Alerts can then reference the attack graph to check to see if the attack from the alert is likely.\\
+\subsection*{CLustering Alerts for Root Cause Analysis (CLARAty)}
+Many of the false-positive alerts are generated by a few "root" causes. If we can identify these root causes that trigger large volumes of false-positives we can significantly decrease our false-positive rate. These root causes can be identified by clustering the alerts, manual examination is needed to identify the true root cause, but once identified, the alerts can be stopped. Examples: WWW IIS view source attack and TCP SYN host sweep.\\
+"generalized alerts cover 149,134 of the total 156,380 raw alerts for this month."\\
+"8 generalized alerts cover more than 90\% of the alerts"\\
+\subsection*{Adaptive Learner for Alert Classification (ALAC)}
+\textbf{Recommender mode} In this mode the system makes tentative labels on the alert and passes it to the IDS operator. From here, manual inspection is done and feedback can be given as to whether or not the alert was correctly classified.\\
+\textbf{Agent mode} In agent mode packets labeled false positives with high confidence are thrown out. The exception is that a random sample of packets are sent to the operator with probability K(where K is a user defined).
+"the number of alerts for the analyst to handle has been reduced by more than 50\%".\\
+\subsection*{All together now}
+Recommendation - Use CLARAty to filter, then use ALAC for further analysis on the cut down data set.\\
+
+
+\begin{thebibliography}{1}
+
+\bibitem{verwoerd99}
+  Theuns Verwoerd, Ray Hunt,
+  \emph{Intrusion Detection Techniques and Approaches}.
+  University of Canterbury, New Zealand,
+  1999.
+
+\bibitem{tsai09}
+  Chih-Fong Tsai, Yu-Feng Hsu, Chia-Ying Lin, Wei-Yang Lin
+  \emph{Intrusion detection by machine learning: A review}
+  National Central University, Taiwan
+  2009
+  
+\bibitem{laskov05}
+  Pavel Laskov, Patrick Du?ssel, Christin Sch?afer, and Konrad Rieck
+  \emph{Learning Intrusion Detection: Supervised or Unsupervised}
+  Berlin, Germany
+  2005
+  
+\bibitem{pietraszek05}
+  Tadeusz Pietraszek, Axel Tanner
+  \emph{Data mining and machine learningd Towards reducing false positives in intrusion detection}
+  Ruschlikon, Switzerland
+  2005
+\end{thebibliography}
+\end{document}
