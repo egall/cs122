@@ -1,0 +1,187 @@
+\documentclass[12pt]{article} % <--- Please use 12pt font
+\usepackage{mathptmx}
+\usepackage[T1]{fontenc}
+\usepackage{enumerate,graphicx,hyperref,verbatim, amsmath, mathtools,pdfpages}
+
+% Please put your title here (not more than two lines)
+\title{Sleuthkit: XTAF extension}
+
+% List the name of the speaker/presenter and any coauthors here 
+% together with their affiliations
+\author{\textbf{Erik Steggall}\\ esteggall@soe.ucsc.edu}
+
+
+\date{} % <--- Please leave date empty
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+
+%\noindent \textbf{Abstract} \\
+%\noindent Please put your abstract here (not more than half a page)
+
+%\vspace{18pt}
+%\noindent \textbf{Keywords} - 
+
+
+\section{Introduction}
+%\noindent 
+In the last decade many new forms of malware and other computer related attacks have been developed, as a response intrusion detection systems (IDSs) have emerged to combat the offensive threat. Intrusion detection systems are useful as they are able to process and evaluate potential threats in large amounts  data that a human analyst would not be capable of doing. IDSs are typically the last line of defense, as it they start functioning only once an attack has initiated, however they are a crucial tool for system administrators who would otherwise be incapable of such extensive monitoring of the system.\\
+One of the biggest difficulties of designing a good intrusion detection system is designing a system that is able to accurately detect attacks without burdening the underlying system to heavily. Advances in algorithm designs have lead to new models of intrusion detection systems such as the use of the Aho-Corresick \cite{tuck04}. These algorithms are efficient at detecting known attacks, but are not capable of identifying new attacks and may give the system administrator a false sense of confidence in the security of their system.\\
+While it is impossible to cover all possibilities of future attacks, many attacks share similarities with one another as well as being dissimilar to legitimate system use. This observation has lead to contributions from the machine learning community towards the advancement in intrusion detection systems to allow for the detection of new attacks that would otherwise not be detectable using the current algorithmic techniques.\\ 
+
+% What is the general problem that we are addressing
+
+\section{Intrusion Detection Systems}
+Intrusion detection systems must defend against a multitude of different attacks executed by attackers who may be be interested in compromising system. These attackers can be split into three main defined by W. Stallings\cite{stallings08}; masqueraders, misfeasors, and clandestine users. This means that an intrusion detection system must be able to detect both internal, and external attacks. Different styles of intrusion detection are tailored around defending against different attack vectors and are usually combined for a single comprehensive IDS.\\
+An intrusion detection system can be split into four main components\cite{verwoerd99}:
+\begin{itemize}
+    \item \textit{Sensor/Probe} These modules are at the endpoints of an intrusion detection system and are designed to gather information and translate it into events that can be used by the monitor. Network traffic and system information are two examples of flows that may be tracked by a sensor.\\
+    \item \textit{Monitor} A monitor takes in the events from various sensors and examines them for potential attacks. Monitors will generate alerts for potential attacks which it will pass to a resolver.\\
+    \item \textit{Resolver} The resolver takes in the alert events passed to it by monitors and handles them appropriately, typically by logging the event as well as notifying system operators, or automatically reconfiguring security mechanisms or components.\\
+    \item \textit{Controller} The controller offers a single point of administrator for the IDS. The controller is a central interface for configuration and updates for the IDS and handles the specifics and behaviors of the IDS.\\
+\end{itemize}
+
+\subsection{Host Based}
+A host based intrusion detection system a specialized layer of software designed to detect attacks that are based on the local device. Host based intrusion detection systems monitor internal systems like databases and system calls and report suspicious activity. In some special cases a host based IDS may even halt an attack before the event is able to fully transpire, but for the most part these systems simply detect suspicious activity, log it, and send alerts if the noted activity warrants it.\\
+Host-based intrusion detection is typically designed around audit records that track user activity on the system. Each of these content of audit records usually contain; subject, action, object, resource usage, time stamps, and exception conditions that may be been raised by said activity.\\
+
+\subsection{Network Based}
+Network based intrusion detection analyze network traffic from one or more locations on a system in an attempt to detect attacks that are indicated by certain patterns in packet traffic. Sensors are usually placed in strategic locations such as ingress/egress points on the network and forward traffic to a single point where analysis is done.\\
+Network based intrusion detection relies on the detection of certain patterns in network traffic, or anomalous behavior on the network in order to detect an attack. When an attack is detected the network IDS will log the occurrence, and may additionally send alerts to the network administrator or send a signal to the firewall to block the traffic, or both. An entry in a network based log usually contains; a timestamp, a connection or session id, the alert type, a severity rating, protocol types, source and destination IPs and ports, bytes transmitted, and other relevant information depending on the type of system.\\
+
+\subsection{Misuse detection}
+Misuse detection, or signature detection, is the process of cross referencing system events against known attack signatures in order to identify suspicious activity. Additionally, a misuse detection scheme can also use rules that identify known weaknesses on the system and be more sensitive in generating alarms pertaining to that weakness.\\
+String matching algorithms can be to detect known attacks, most notably the Aho-Corasick algorithm which is designed to search for multiple keywords over a large input string.The Aho-Corresick algorithm uses state machines which keep each pattern as a leaf node in the state machine, and connects the prefixes of similar patterns together, in this way, especially for similar viruses, multiple similar patterns can all be evaluated in linear time if they share a similar prefix \cite{tuck04}.\\
+The drawback of string matching algorithms is their inflexibility with detecting unknown attacks. If designed correctly, machine learning techniques could be used in tandem, or as a replacement of string matching algorithms as they are able to detect new attacks based on signatures of known attacks.\\
+
+\textbf{Types of misuse detection used in practice}\cite{verwoerd99}
+\begin{itemize}
+    \item \textit{expression matching} This technique uses regular expressions to match known fraudulent activity.\\
+    \item \textit{State transition analysis} This technique uses state machines to track event transitions, any flow that makes it to the final state triggers an alert as it is most likely an attack.\\
+    \item \textit{Dedicated languages} A number of languages have been developed for IDSs that allow for processing and filtering to match attack scenarios.\\
+    \item \textit{Genetic algorithms} This is a machine learning approach that combines known attacks and repeatedly selects and recombines the best combinations depending on risk and attack potential. This method is described more fully in a later section.\\
+    \item \textit{burglar alarm} This approach tracks events that should never occur in a legitimate scenario and triggers an alarm if said event occurs.\\
+\end{itemize}
+
+\subsection{Anomaly detection}
+Anomaly detection is a style of intrusion detection that relies on using prior knowledge of legitimate activity to classify legitimate system usage against attacks. Anomaly based detection hinges on the observation that most attacks have a distinctly different activity flow compared to normal system usage.\\
+Anomaly detection is performed by examining statistical properties of a normal system and identifying system behaviors that deviate from those norms. This process can be as simple as calculating the mean and standard deviation of activities on a system. This analysis can be extended to include multivariate analysis, where correlations between two or more variables are examined, Markov process, where state transitions of events are examined, or time series analysis, where timing intervals of an event are examined.\\
+Typical examples of anomalies are DoS attacks, scanning attempts, worms, transfer of large amounts of information or files.\\ 
+
+\textbf{Types of anomaly detection used in practice}\cite{verwoerd99}
+\begin{itemize}
+    \item \textit{Immune System Approach} This approach models the normal behavior of applications by examining the system calls generated by legitimate usage and triggers an alarm if abnormal behavior is observed.\\
+    \item \textit{Protocol Verification} This technique checks protocol fields for unusual or malformed entries and triggers an alarm if one is detected.\\
+    \item \textit{File Checking} This approach scans the filesystem using cryptographic checksums to detect unauthorized changes.\\
+    \item \textit{Taint checking} This is an application based technique that treats inputs as untrusted information unless it is properly sanitizing it.\\
+    \item \textit{Neural nets} This is a machine learning based technique that involves complex networks of computational units that are trained on normal system activity. Events that deviate from the initial training are flagged as anomalous.\\
+    \item \textit{Whitelisting} This technique limits the system to a list of known legitimate activities.\\
+\end{itemize}
+\section{Machine Learning Algorithms}
+
+
+\begin{itemize}
+    \item KNN: Online training
+    \item Support vector machins:  
+    \item Artificial Neural Networks
+    \item Self organization maps: Reduce high-dimensional inputs into two dimensions
+    \item Decision trees
+    \item Nieve Bayes network
+    \item genetic algorithms
+    \item fuzzy logic
+\end{itemize}
+
+
+\subsection{Supervised}
+\subsection{Unsupervised}
+\subsection{Algorithms}
+\subsection{Problems with Machine Learning Techniques}
+
+
+\section{Conclusion} 
+% Go over the paper done by Paxon \cite{paxon10} which describes the flaws of the current approaches to machine learning and intrusion detection
+\section{Future Work}
+% Go over the work that was done by \cite{pietraszek05} about combining misuse and anomaly detection as well as creating a system that allows for the system administrator to actively judge the content.
+
+\begin{thebibliography}{1}
+
+\bibitem{verwoerd99}
+  Theuns Verwoerd, Ray Hunt,
+  \emph{Intrusion Detection Techniques and Approaches}.
+  University of Canterbury, New Zealand,
+  1999.
+
+\bibitem{tsai09}
+  Chih-Fong Tsai, Yu-Feng Hsu, Chia-Ying Lin, Wei-Yang Lin
+  \emph{Intrusion detection by machine learning: A review}
+  National Central University, Taiwan
+  2009
+  
+\bibitem{laskov05}
+  Pavel Laskov, Patrick Du?ssel, Christin Sch?afer, and Konrad Rieck
+  \emph{Learning Intrusion Detection: Supervised or Unsupervised}
+  Berlin, Germany
+  2005
+  
+\bibitem{pietraszek05}
+  Tadeusz Pietraszek, Axel Tanner
+  \emph{Data mining and machine learning: Towards reducing false positives in intrusion detection}
+  Ruschlikon, Switzerland
+  2005
+  
+\bibitem{sabhnani03}
+    Maheshkumar Sabhnani, Gursel Serpen
+    \emph{Application of Machine Learning Algorithms to
+KDD Intrusion Detection Dataset within Misuse Detection Context}
+    Toledo, Ohio
+    2003
+\bibitem{sabhnani04}
+  Maheshkumar Sabhnani, Gursel Serpen
+  \emph{Why Machine Learning Algorithms Fail in Misuse Detection
+on KDD Intrusion Detection Data Set}
+  Toledo, Ohio
+   2004
+   
+\bibitem{endler98}
+  David Endler
+  \emph{Intrusion Detection
+Applying Machine Learning to Solaris Audit Data}
+  New Orleans, LA
+  1998
+\bibitem{lee97}
+  Wenke Lee, Saivatore Stolfo, Philip Chan
+  \emph{Learning Patterns from Unix Process ExecutionTraces for Intrusion Detection}
+  New York, NY
+  1997
+\bibitem{paxon10}
+  Robin Sommer, Vern Paxson
+  \emph{Outside the Closed World:On Using Machine Learning For Network Intrusion Detection}
+  Berkeley, CA
+  2010
+  
+\bibitem{sinclair99}
+  Chris Sinclair, Lyn Pierce, Sara Matzner
+  \emph{An Application of Machine Learning to Network Intrusion Detection}
+  Austin, TX
+  1999
+  
+\bibitem{mukkamala02}
+  Srinivas Mukkamala, Guadalupe Janoski, Andrew Sung
+  \emph{Intrusion Detection Using Neural Networks and Support Vector Machines}
+  Socorro, NM
+  2002
+  
+\bibitem{tuck04} Tuck, N.; Sherwood, T. ; Calder, B. ; Varghese, G.;
+"Deterministic memory-efficient string matching algorithms for intrusion detection"
+
+\bibitem{stallings08}
+  William Stallings, Lawrence Brown
+  \emph{Computer Security: Principles and Practice}
+  2008
+
+\end{thebibliography}
+
+
+\end{document}
