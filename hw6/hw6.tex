@@ -1,0 +1,26 @@
+\documentclass{article}
+
+\usepackage[latin1]{inputenc}
+\usepackage{times,fullpage,amsmath}
+\usepackage{enumerate,graphicx,hyperref,verbatim, amsmath, mathtools, pdfpages}
+\DeclareMathSizes{10}{10}{10}{10}
+\title{CS122 Homework \#6}
+\author{Erik Steggall \\ esteggall@soe.ucsc.edu}
+
+\date{Fall 2014}
+\setlength\parindent{0pt}
+\begin{document} \maketitle \pagestyle{empty}
+\section*{Problem 1}
+There is an inherent tradeoff between security and ease of use, or speed/performance on a system. A system setup with little security will be very easy to use and give better performance, however the lack of security is an issue as it leaves the system vulnerable to attacks which could potentially slow the system down or even deny the user access to the system anyway.\\
+On the other hand, an over secured system may protect against attacks but be too complicated or slow to use. An example of this is SELinux, which provides very good protection but is prohibitively complex, and thus is not frequently used.\\
+Another flaw of providing too much security is that the user may choose to bypass the security checks in an attempt to increase the performance. This was a notable problem for Windows system after they included numerous checks to ensure the user was aware of the risks they were taking for various events. The problem with this system is eventually users became fed up with the constant security checks and would agree to the security checks without ever actually reading them, which thwarts the intent of the security check making it effectively useless.\\
+In summary, a systems security should be tailored to the particular needs of the system. The simpler the security, the better, as UNIX demonstrates with its reuse of simple security policies that result in a system that is both relatively secure and easy to use. The more complex the security policy, the more often it will be misused or neglected.\\
+
+\section*{Problem 2}
+The advantages of using a system like Tripwire is that it logs changes in file system activity which allows the system administrator to examine these changes on a later date, or receive alerts if suspicious activity is detected. This is useful as some attacks will either make significant changes on the file system which will be picked up by Tripwire, or they may choose to change files that would not need to be changed for normal system use. These red flags can identify attacks to the system administrator who can make the appropriate changes.\\
+Disadvantages of Tripwire would be it's computational intensiveness, its time intensiveness for the system administrator, and the false sense of security that it may give. If misconfigured, Tripwire could be potentially very intrusive on a system's CPU time and get in the way of the normal functions of the system which would be annoying for users. Another result of misconfiguration would be a case where it is constantly sending false alerts to the system administrator who would have to manually examine each alert, which would take time away from them doing productive work. Finally, if the system is configured to handle avoid the first two cases, it may be misconfigured to not be aggressive enough in either its alert generation or its file system scanning, which would give the system administrator a false sense of security as an attack they may have otherwise been able to detect they may ignore because of their confidence in the ability of Tripwire in detecting such an attack.\\
+
+\section*{Problem 3}
+The problem with using Bitlocker and sleep mode is that a knowledgeable attacker can extract the key used by Bitlocker from the computers memory, which will allow them to access the contents of the hard drive anyway. Hibernate mode forces re-authentication, making it just as difficult for the attacker to get the key from memory as it would be for them to gain access to your system another way.\\
+
+\end{document}
