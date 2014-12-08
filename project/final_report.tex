@@ -54,7 +54,7 @@ Network based intrusion detection relies on the detection of certain patterns in
 \subsection{Misuse detection}
 Misuse detection, or signature detection, is the process of cross referencing system events against known attack signatures in order to identify suspicious activity. Additionally, a misuse detection scheme can also use rules that identify known weaknesses on the system and be more sensitive in generating alarms pertaining to that weakness.\\
 String matching algorithms can be to detect known attacks, most notably the Aho-Corasick algorithm which is designed to search for multiple keywords over a large input string.The Aho-Corresick algorithm uses state machines which keep each pattern as a leaf node in the state machine, and connects the prefixes of similar patterns together, in this way, especially for similar viruses, multiple similar patterns can all be evaluated in linear time if they share a similar prefix \cite{tuck04}.\\
-The drawback of string matching algorithms is their inflexibility with detecting unknown attacks. If designed correctly, machine learning techniques could be used in tandem, or as a replacement of string matching algorithms as they are able to detect new attacks based on signatures of known attacks.\\
+The drawback of string matching algorithms is their inflexibility with detecting unknown attacks. If designed correctly, machine learning techniques could be used in tandem, or as a replacement of string matching algorithms as they are able to detect new attacks based on signatures of known attacks.\cite{endler98} \\
 
 \textbf{Types of misuse detection used in practice}\cite{verwoerd99}
 \begin{itemize}
@@ -68,7 +68,9 @@ The drawback of string matching algorithms is their inflexibility with detecting
 \subsection{Anomaly detection}
 Anomaly detection is a style of intrusion detection that relies on using prior knowledge of legitimate activity to classify legitimate system usage against attacks. Anomaly based detection hinges on the observation that most attacks have a distinctly different activity flow compared to normal system usage.\\
 Anomaly detection is performed by examining statistical properties of a normal system and identifying system behaviors that deviate from those norms. This process can be as simple as calculating the mean and standard deviation of activities on a system. This analysis can be extended to include multivariate analysis, where correlations between two or more variables are examined, Markov process, where state transitions of events are examined, or time series analysis, where timing intervals of an event are examined.\\
+Anomaly detection based systems suffer from knowledgable attackers slowly ramping up their attack, this is effective especially in the learning phase and can result in a fully fledged attack going by un-noticed.\cite{endler98} \\
 Typical examples of anomalies are DoS attacks, scanning attempts, worms, transfer of large amounts of information or files.\\ 
+
 
 \textbf{Types of anomaly detection used in practice}\cite{verwoerd99}
 \begin{itemize}
@@ -79,31 +81,101 @@ Typical examples of anomalies are DoS attacks, scanning attempts, worms, transfe
     \item \textit{Neural nets} This is a machine learning based technique that involves complex networks of computational units that are trained on normal system activity. Events that deviate from the initial training are flagged as anomalous.\\
     \item \textit{Whitelisting} This technique limits the system to a list of known legitimate activities.\\
 \end{itemize}
-\section{Machine Learning Algorithms}
+\section{Machine Learning Techniques}
 
-
-\begin{itemize}
-    \item KNN: Online training
-    \item Support vector machins:  
-    \item Artificial Neural Networks
-    \item Self organization maps: Reduce high-dimensional inputs into two dimensions
-    \item Decision trees
-    \item Nieve Bayes network
-    \item genetic algorithms
-    \item fuzzy logic
-\end{itemize}
-
+As observed by Lee et al. in their study of host based intrusion detection on a UNIX system: "When an intrusion actually occurs, the majority of adjacent system call sequences are abnormal; whereas the [normal] prediction errors tend to be isolated and sparse." \cite{lee97}. This observation can be extended to the general case, as most intrusions tend to exhibit abnormal behavior on a system that theoretically should be detectable. Thus, machine learning seems to be an ideal fit for intrusion detection.\\
+% write general description of the machine learning problem as it applies to intrusion detection. May be useful to use the work from Paxon.
 
 \subsection{Supervised}
+Supervised learning is a machine learning task that is based on determining a particular label type based on an input vector. Supervised learning is defined by the availability of true labels for a given dataset being available for a sufficient amount of training data. Supervised learning uses these known labels as "ground truth" in order to evaluate the effectiveness of the algorithm in determining the label. After the training is done the algorithm should be able to generalize to other cases without needing the true labels. Supervised techniques include: C4.5 decision trees, KNN, Multi-layer perceptron, regularized discriminant analysis, fisher linear discriminant, support vector machines.\\
 \subsection{Unsupervised}
-\subsection{Algorithms}
-\subsection{Problems with Machine Learning Techniques}
+The goal of unsupervised learning is to find the structure of a particular label given a training set. The difficulty is that there are no labels to reference the true distribution of the data. Unsupervised techniques are preferable to the application of intrusion detection as it is extremely difficult to generate a training set with known labels. Unsupervised learning techniques include: k-Means Clustering, Single Linkage Clustering, Quarter-Sphere Support Vector Machine.\\ 
 
+
+\noindent
+\textbf{k-Nearest Neighbor}\\
+The k-Nearest Neighbor, or kNN, is one of the simplest machine algorithms, however it is very effective for intrusion detection. In order to classify a new data point kNN computes the euclidean distances from the new data point to a k neighboring points and assigns the new points to the majority winner among its k nearest neighbors. The value k varies depending on the application, where a higher k means lower variance and higher bias. This algorithm is effective for intrusion detection because it is unsupervised.\\
+
+\noindent
+\textbf{Decision Trees}\\
+Decision trees use a set of rules to segregate the dataset based on its features. These rules are combined into a tree, examples are fed to the root and each node is contains a rule that separates out an example based on one or more of its features. Each leaf node or terminal node will then classify any example that reaches it. Decision trees are another algorithm set that is seemingly very simple, but very effective for the task of intrusion detection.\\
+
+\noindent
+\textbf{Support Vector Machines}\\
+Support Vector Machines, or SVMs, are one of the most effective algorithms for intrusion detection, and general machine learning as well. Support vector machines map the input feature set into a higher dimension, and then calculate the optimal hyperplane in that higher dimensional space. Support vector machines also provide a penalty factor that allows for a tradeoff between the number of mistakes and the width of the separating decision boundary. This is one of the highly desirable features of SVMs with respect to intrusion detection as they are able to correctly classify while still being robust to legitimate but abnormal system behavior.\\
+
+\noindent
+\textbf{Artificial Neural Networks}\\
+Artificial Neural Networks, or ANN use a series of nodes each of which makes a small computation which contributes to a complex information processing scheme. The nodes are separated into layers, the first layer being the input layer, where each node takes in the input feature set and a corresponding set of weights. From here, each node in the input set does its own computation and outputs the result to the next layer. The next layer is called the hidden layer and contains one or more sets of nodes that function similar to the input layer. Each node in the hidden layer takes in the output of the previous node, and a weight, and outputs to the next nodes in the line. The last layer is called output layer, which produces the final result for the network.\\
+
+\noindent
+\textbf{Naive Bayes Network}\\
+A naive Bayes network uses statistical dependancies and causal relationships to separate out examples. A naive Bayes network consists of a series of nodes that form a probabilistic graph model. This network is usually a directed acyclic graph where each node represents a system variable and each link represents the influence on one node to another. These networks can be used to determine the likelihood of an attack based on properties of the system and a series of previously seen events.\\
+
+\noindent
+\textbf{Genetic Algorithms}\\
+Genetic algorithms are a family of problem solving techniques that use methods based on observations of natural selection and ecology. A genetic algorithm combines multiple encoded units or ''genes'' to form an encoded series or ''chromosome''. The algorithm starts with a diverse population of differently arranged chromosomes and an evaluation function that selects for ''better'' chromosomes. The algorithm selects a number of the ''best'' chromosomes and recombines the genes of pairs of the selected chromosomes to create a new set of chromosomes to be evaluated and recombined again.\\
+The genetic solution uses the concept of ”niching” to create a diverse set of rules that will fire off in the event that an anomalous network behavior set is detected. This technique uses the concepts of niching from ecology\cite{sinclair99}, these niches can be configured to represent anomalous behavior on a network which makes it useful to intrusion detection.\\
+
+\noindent
+\textbf{Fuzzy logic}\\
+Fuzzy logic deals with approximate truth values instead of fixed binary values. Fuzzy logic is a form of many valued logic, its strength is in that it deal with probabilities falling in-between 0 and 1, instead of being constrained to binary classification. This is appropriate for intrusion detection as most alerts do not take on binary values so a probabilistic value ranging from 0 to 1 is more interpretable than a binary classification.\\
+
+\noindent
+\textbf{k-Means Clustering}\\
+k-Means clustering is a technique that attempts to cluster data points in the data set into k different clusters. This algorithm starts by initializing k different center points for the dataset. The data points nearest to the center points are assigned to that cluster, from there the centers are recalculated to find the middle most point in the cluster in order to minimize the distance between the center point and all of the data points that belong to it. The process then iterates until these points converge.\\
+
+\subsection{Algorithm Combination}
+\noindent
+\textbf{Hybrid Classifiers}\\
+A hybrid classifier will combine two or more machine learning techniques to produce a more robust output than the individual algorithms would produce. Hybrid algorithms will run in series; the first algorithm will take in raw input and generate intermediate results, the next in line will then use these intermediate results as input and generate a next set outputs, the final algorithm will produce usable results. These hybrid techniques combine algorithms in a way that complement each others strengths and cover each others weak points and can be very potentate tools. \cite{tsai09}  \\ % Maybe comment on \cite{pietraszek05} 
+
+\noindent
+\textbf{Ensemble Classifiers}\\
+Ensemble classifiers combine the results from a number of different machine learning algorithms in order to form a majority vote. This technique is useful as many of the algorithms may produce results that tend to have a high false positive rate. With the combination of multiple different results we can find that if results are agreed upon by two or more algorithms there is a much higher chance that the result is not a false positive\cite{tsai09}. \\
+
+
+\section{Application of Machine Learning for Intrusion Detection}
+According to Tsai et al. \cite{tsai09} the two most widely used machine learning algorithms in research are SVMs and kNN classifiers. This finding is confirmed by Laskov et al. \cite{laskov05} who found that SVMs were the top preforming algorithm which kNN falling close behind. Work done by Sabhnani et al. \cite{sabhnani03} \cite{sabhnani04} found that SVMs, neural networks, k-means clustering, and decision trees to be the best preforming algorithms when applied to the KDD dataset.\\
+
+\subsection{KDD dataset}
+The KDD dataset was created from an earlier dataset generated by DARPA in 1998. This dataset is a simulation of real network activity with attacks injected in.\cite{mukkamala02} The The KDD dataset divided into four major categories of attack: Probing attacks (info gathering attacks), denial-of-service attacks, user-to-root attacks, and remote-to-local attacks. In its entirety the dataset has thirty six attack types from all four categories, 45,000 records are selected for entire dataset. Though the dataset considered the standard for intrusion detection evaluation it suffers from a number of problems described later in this paper.\\
+Sabhnani et al. did a study examining a number of machine learning techniques applied to the KDD data set. They found that most techniques preformed well on the probing and DoS attacks, but handled the remote-to-local and user-to-root attacks poorly\cite{sabhnani03}. This is most likely due to both the shortcomings of the KDD dataset, as well as the increased difficulty of predicting remote-to-local attacks vs user-to-root. They found that SVMs preformed the best in detecting probing attacks, with a 93.2\% detection rate and an 18.8\% false positive rate, the runner up was neural networks that were able to detect 88.7\% of attacks with only a 0.4\% false positive rate. Both neural networks and k-means clustering received a 97.3\% and 97.4\% respectively in detecting DoS attacks with only a 0.3\% and 0.4\% false positive rate. For user-to-root attacks the detection rate drops to 29.8\% given by k-means with a 0.4\% false positive rate, the next runner up is significantly less than that. Remote-to-local attack predictions were dismal, with non of the techniques detecting greater than 10\% of attacks.\\
+As later analyzed by Sabhnani et al. one of the large drawbacks of the KDD dataset is that most of the records for U2R and R2L (80\% and 60\% respectively) are entirely new to the testing dataset\cite{sabhnani03}.\\
+
+
+\subsection{Supervised vs Unsupervised} 
+A study was done by Laskov et al. \cite{laskov05} the analyze various machine learning techniques including both supervised and unsupervised techniques. The found that non-linear algorithms were the best performers among the supervised techniques.\\
+''The best results (with a significant margin) are attained by the SVM, which can be attributed to the fact that the free parameters of this algorithm are motivated by learning-theoretic arguments aimed at maintaining an ability to generalize to unseen data. The next best contestant is the k-Nearest Neighbor algorithm which possesses the most similarity to the unsupervised methods. The remaining algorithm perform approximately equally.''\\
+
+
+\subsection{Problems with Machine Learning Techniques}
+Machine learning is a difficult task with respect to intrusion detection due to fundamental differences in the machine learning task required to detect new attacks. Most similar applications attempt to classify a number of known instances, 
+% go over short commings of {endler98}, who 
+
+\subsection{Future of Machine Learning and Intrusion Detection}
+% Go over the work that was done by \cite{pietraszek05} about combining misuse and anomaly detection as well as creating a system that allows for the system administrator to actively judge the content.
+In a work done by Pietraszek et al. \cite{pietraszek05} a novel approach of combining fundamentally disparate intrusion detection techniques in order to significantly reduce false positives. The study examined two different approaches to intrusion detection: The CLustering Alerts for Root Cause Analysis (CLARAty) and Adaptive Learner for Alert Classification (ALAC)
+
+\noindent
+\textbf{CLARAty}\\
+CLARAty runs on the fundamental premise that many of the false-positive alerts are generated by a few "root" causes. Thus, if we can identify these root causes that trigger large volumes of false-positives we can significantly decrease our false-positive rate. These root causes can be identified by clustering the alerts, manual examination is needed to identify the true root cause, but once identified, the alerts can be stopped.\\
+According to the study; "8 generalized alerts cover more than 90\% of the alerts" \cite{pietraszek05}.\\
+\noindent
+\textbf{ALAC}\\
+ALAC uses active feedback from the system administrator to help train the machine learning techniques in an on-line setting. This method has two phases:\\
+\textit{Recommender mode} In this mode the system makes tentative labels on the alert and passes it to the IDS operator. From here, manual inspection is done and feedback can be given as to whether or not the alert was correctly classified.\\
+\textit{Agent mode} In agent mode packets labeled false positives with high confidence are thrown out. The exception is that a random sample of packets are sent to the operator with probability K(where K is a user defined).
+According to the study this technique alone reduced the number of alerts the analyst had to handle by 50\%\cite{pietraszek05}\\
+The authors of this paper recommended using both systems in tandem to produce the best results, but did not include the results of such a combination.\\
+
+
+Another example of using a combination of approaches was described by Endler et al. \cite{endler98} who successfully used Solaris's BSM audit data as the input to both misuse detection and anomaly detection algorithms and were able to identify buffer overflow attacks. By combining misuse and anomaly detection the administrator has a more clear picture of if an attack is occurring. With just anomaly detection, there is a high risk of too many false positives if a user is currently doing a new task, but when combined with the misuse detection the overlapping values tend to agree on what is an attack and what isn't.\\
 
 \section{Conclusion} 
 % Go over the paper done by Paxon \cite{paxon10} which describes the flaws of the current approaches to machine learning and intrusion detection
-\section{Future Work}
 % Go over the work that was done by \cite{pietraszek05} about combining misuse and anomaly detection as well as creating a system that allows for the system administrator to actively judge the content.
+% Go over work done by {endler98} to combine anomaly and misuse systems.
 
 \begin{thebibliography}{1}
 
@@ -120,7 +192,7 @@ Typical examples of anomalies are DoS attacks, scanning attempts, worms, transfe
   2009
   
 \bibitem{laskov05}
-  Pavel Laskov, Patrick Du?ssel, Christin Sch?afer, and Konrad Rieck
+  Pavel Laskov, Patrick Dussel, Christin Schafer, and Konrad Rieck
   \emph{Learning Intrusion Detection: Supervised or Unsupervised}
   Berlin, Germany
   2005
